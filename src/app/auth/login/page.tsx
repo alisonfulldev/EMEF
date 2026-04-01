@@ -35,7 +35,7 @@ export default function LoginPage() {
       }
 
       toast.success('Login realizado com sucesso!');
-      router.push('/');
+      router.push('/admin/alunos');
     } catch (err) {
       toast.error('Erro ao fazer login');
     } finally {
