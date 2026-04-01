@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 export default function NotasPage() {
   const [avaliacoes, setAvaliacoes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [selectedAvaliacaoId, setSelectedAvaliacaoId] = useState<string | null>(null);
   const [notas, setNotas] = useState<any[]>([]);
 
@@ -16,9 +17,10 @@ export default function NotasPage() {
   const fetchAvaliacoes = async () => {
     try {
       const res = await fetch('/api/professor/avaliacoes');
-      setAvaliacoes(await res.json());
+      const data = await res.json();
+      setAvaliacoes(Array.isArray(data) ? data : []);
     } catch (error) {
-      toast.error('Erro');
+      toast.error('Erro ao carregar avaliações');
     } finally {
       setLoading(false);
     }
@@ -28,10 +30,37 @@ export default function NotasPage() {
     try {
       const res = await fetch(`/api/avaliacoes/${avaliacaoId}/notas`);
       const data = await res.json();
-      setNotas(data);
+      setNotas(Array.isArray(data.notas) ? data.notas : []);
       setSelectedAvaliacaoId(avaliacaoId);
     } catch (error) {
       toast.error('Erro ao carregar notas');
+    }
+  };
+
+  const handleNotaChange = (alunoId: string, value: string) => {
+    setNotas(notas.map(n =>
+      n.aluno_id === alunoId
+        ? { ...n, nota: value === '' ? null : parseFloat(value) }
+        : n
+    ));
+  };
+
+  const handleSave = async () => {
+    if (!selectedAvaliacaoId) return;
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/avaliacoes/${selectedAvaliacaoId}/notas`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notas }),
+      });
+
+      if (!res.ok) throw new Error('Erro ao salvar');
+      toast.success('Notas salvas com sucesso');
+    } catch (error) {
+      toast.error('Erro ao salvar notas');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -87,7 +116,8 @@ export default function NotasPage() {
                           min="0"
                           max="10"
                           step="0.1"
-                          defaultValue={nota.nota || ''}
+                          value={nota.nota ?? ''}
+                          onChange={(e) => handleNotaChange(nota.aluno_id, e.target.value)}
                           className="input-base w-24"
                           placeholder="Nota"
                         />
@@ -96,6 +126,15 @@ export default function NotasPage() {
                   ))}
                 </tbody>
               </table>
+            </div>
+            <div className="mt-4">
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="btn-primary px-6"
+              >
+                {saving ? 'Salvando...' : 'Salvar Notas'}
+              </button>
             </div>
           </div>
         )}
