@@ -17,9 +17,16 @@ export default function DisciplinasPage() {
   const fetchDisciplinas = async () => {
     try {
       const res = await fetch('/api/admin/disciplinas');
-      setDisciplinas(await res.json());
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || 'Erro ao carregar');
+        setDisciplinas([]);
+        return;
+      }
+      setDisciplinas(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Erro ao carregar');
+      setDisciplinas([]);
     } finally {
       setLoading(false);
     }

@@ -30,9 +30,15 @@ export default function AlunosPage() {
     try {
       const res = await fetch(`/api/admin/alunos?search=${search}`);
       const data = await res.json();
-      setAlunos(data);
+      if (!res.ok) {
+        toast.error(data.error || 'Erro ao carregar alunos');
+        setAlunos([]);
+        return;
+      }
+      setAlunos(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Erro ao carregar alunos');
+      setAlunos([]);
     } finally {
       setLoading(false);
     }
@@ -42,9 +48,15 @@ export default function AlunosPage() {
     try {
       const res = await fetch('/api/admin/turmas');
       const data = await res.json();
-      setTurmas(data);
+      if (!res.ok) {
+        toast.error(data.error || 'Erro ao carregar turmas');
+        setTurmas([]);
+        return;
+      }
+      setTurmas(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching turmas:', error);
+      setTurmas([]);
     }
   };
 

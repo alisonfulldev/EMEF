@@ -21,9 +21,16 @@ export default function AnoLetivoPage() {
   const fetchAnos = async () => {
     try {
       const res = await fetch('/api/admin/ano-letivo');
-      setAnos(await res.json());
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || 'Erro');
+        setAnos([]);
+        return;
+      }
+      setAnos(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Erro');
+      setAnos([]);
     } finally {
       setLoading(false);
     }

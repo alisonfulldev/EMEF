@@ -7,25 +7,30 @@ import { Justificativa, StatusJustificativa } from '@/types';
 
 export default function JustificativasPage() {
   const [justificativas, setJustificativas] = useState<Justificativa[]>([]);
+  const [alunos, setAlunos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<StatusJustificativa | 'todas'>('todas');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [observacao, setObservacao] = useState('');
 
   useEffect(() => {
-    fetchJustificativas();
+    fetchData();
   }, [filter]);
 
-  const fetchJustificativas = async () => {
+  const fetchData = async () => {
     try {
-      const url = filter === 'todas'
-        ? '/api/adm/justificativas'
-        : `/api/adm/justificativas?status=${filter}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      setJustificativas(Array.isArray(data) ? data : []);
+      const [justRes, alunosRes] = await Promise.all([
+        fetch(filter === 'todas' ? '/api/adm/justificativas' : `/api/adm/justificativas?status=${filter}`),
+        fetch('/api/admin/alunos'),
+      ]);
+
+      const justData = await justRes.json();
+      setJustificativas(Array.isArray(justData) ? justData : []);
+
+      const alunosData = await alunosRes.json();
+      setAlunos(Array.isArray(alunosData) ? alunosData : []);
     } catch (error) {
-      toast.error('Erro');
+      toast.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
     }
@@ -41,7 +46,7 @@ export default function JustificativasPage() {
       toast.success('Justificativa aprovada');
       setObservacao('');
       setExpandedId(null);
-      fetchJustificativas();
+      fetchData();
     } catch (error) {
       toast.error('Erro');
     }
@@ -57,7 +62,7 @@ export default function JustificativasPage() {
       toast.success('Justificativa rejeitada');
       setObservacao('');
       setExpandedId(null);
-      fetchJustificativas();
+      fetchData();
     } catch (error) {
       toast.error('Erro');
     }
@@ -111,7 +116,7 @@ export default function JustificativasPage() {
                   className="flex items-center justify-between"
                 >
                   <div>
-                    <p className="font-bold">Aluno: {j.aluno_id}</p>
+                    <p className="font-bold">Aluno: {alunos.find(a => a.id === j.aluno_id)?.nome_completo || j.aluno_id}</p>
                     <p className="text-sm text-slate-600">Data: {j.data_falta}</p>
                     <p className="text-sm text-slate-600">Motivo: {j.motivo}</p>
                   </div>
