@@ -25,9 +25,16 @@ export default function TurmasPage() {
   const fetchTurmas = async () => {
     try {
       const res = await fetch('/api/admin/turmas');
-      setTurmas(await res.json());
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || 'Erro ao carregar turmas');
+        setTurmas([]);
+        return;
+      }
+      setTurmas(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Erro ao carregar turmas');
+      setTurmas([]);
     } finally {
       setLoading(false);
     }
@@ -36,9 +43,16 @@ export default function TurmasPage() {
   const fetchAnosLetivos = async () => {
     try {
       const res = await fetch('/api/admin/ano-letivo');
-      setAnosLetivos(await res.json());
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || 'Erro ao carregar anos letivos');
+        setAnosLetivos([]);
+        return;
+      }
+      setAnosLetivos(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error:', error);
+      setAnosLetivos([]);
     }
   };
 
@@ -74,6 +88,16 @@ export default function TurmasPage() {
     }
   };
 
+  const handleEdit = (turma: Turma) => {
+    setFormData({
+      nome: turma.nome,
+      turno: turma.turno as any,
+      ano_letivo_id: turma.ano_letivo_id,
+    });
+    setEditingId(turma.id);
+    setShowModal(true);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -105,7 +129,7 @@ export default function TurmasPage() {
                     <td className="px-4 py-3">{turma.turno}</td>
                     <td className="px-4 py-3">{turma.ano_letivo_id}</td>
                     <td className="px-4 py-3 text-center">
-                      <button className="inline px-2 py-1 text-blue-600 hover:bg-blue-50 rounded">
+                      <button onClick={() => handleEdit(turma)} className="inline px-2 py-1 text-blue-600 hover:bg-blue-50 rounded">
                         <Edit2 size={16} />
                       </button>
                       <button onClick={() => handleDelete(turma.id)} className="inline px-2 py-1 text-red-600 hover:bg-red-50 rounded">
@@ -123,7 +147,9 @@ export default function TurmasPage() {
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="p-6 border-b font-bold">Nova Turma</div>
+            <div className="p-6 border-b font-bold">
+              {editingId ? 'Editar Turma' : 'Nova Turma'}
+            </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Nome *</label>

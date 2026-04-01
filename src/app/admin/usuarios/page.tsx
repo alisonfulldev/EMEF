@@ -14,6 +14,7 @@ export default function UsuariosPage() {
     email: '',
     nome: '',
     perfil: 'professor' as Perfil,
+    ativo: true,
   });
 
   const perfis: Perfil[] = ['professor', 'responsavel', 'admin', 'secretaria', 'diretor'];
@@ -25,9 +26,16 @@ export default function UsuariosPage() {
   const fetchUsuarios = async () => {
     try {
       const res = await fetch('/api/admin/usuarios');
-      setUsuarios(await res.json());
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || 'Erro ao carregar');
+        setUsuarios([]);
+        return;
+      }
+      setUsuarios(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Erro ao carregar');
+      setUsuarios([]);
     } finally {
       setLoading(false);
     }
@@ -47,11 +55,22 @@ export default function UsuariosPage() {
 
       toast.success(editingId ? 'Atualizado' : 'Criado');
       setShowModal(false);
-      setFormData({ email: '', nome: '', perfil: 'professor' });
+      setFormData({ email: '', nome: '', perfil: 'professor', ativo: true });
       fetchUsuarios();
     } catch (error) {
       toast.error('Erro');
     }
+  };
+
+  const handleEdit = (usuario: Usuario) => {
+    setFormData({
+      email: usuario.email,
+      nome: usuario.nome,
+      perfil: usuario.perfil,
+      ativo: usuario.ativo,
+    });
+    setEditingId(usuario.id);
+    setShowModal(true);
   };
 
   return (
@@ -87,7 +106,7 @@ export default function UsuariosPage() {
                     <td className="px-4 py-3"><span className="badge-info">{u.perfil}</span></td>
                     <td className="px-4 py-3">{u.ativo ? <span className="badge-success">Ativo</span> : <span className="badge-danger">Inativo</span>}</td>
                     <td className="px-4 py-3 text-center">
-                      <button className="text-blue-600 p-2 hover:bg-blue-50 rounded inline">
+                      <button onClick={() => handleEdit(u)} className="text-blue-600 p-2 hover:bg-blue-50 rounded inline">
                         <Edit2 size={16} />
                       </button>
                     </td>
@@ -102,7 +121,9 @@ export default function UsuariosPage() {
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="p-6 border-b font-bold">Novo Usuário</div>
+            <div className="p-6 border-b font-bold">
+              {editingId ? 'Editar Usuário' : 'Novo Usuário'}
+            </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <input
                 type="email"
@@ -127,6 +148,19 @@ export default function UsuariosPage() {
                   <option key={p} value={p}>{p}</option>
                 ))}
               </select>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="ativo"
+                  checked={formData.ativo}
+                  onChange={(e) => setFormData({ ...formData, ativo: e.target.checked })}
+                  className="rounded"
+                />
+                <label htmlFor="ativo" className="text-sm font-medium cursor-pointer">
+                  Ativo
+                </label>
+              </div>
               <div className="flex gap-3 pt-4">
                 <button type="submit" className="btn-primary flex-1">Salvar</button>
                 <button type="button" onClick={() => setShowModal(false)} className="btn-secondary flex-1">Cancelar</button>
