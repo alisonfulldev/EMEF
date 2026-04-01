@@ -1,0 +1,155 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply box-border;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply font-sans antialiased;
+}
+
+/* Tables */
+.table-stripe tbody tr:nth-child(odd) {
+  @apply bg-slate-50;
+}
+
+.table-hover tbody tr {
+  @apply hover:bg-blue-50 transition-colors;
+}
+
+/* Forms */
+.input-base {
+  @apply w-full px-3 py-2 border border-slate-300 rounded-md
+    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+    transition-all text-sm;
+}
+
+.textarea-base {
+  @apply w-full px-3 py-2 border border-slate-300 rounded-md
+    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+    transition-all text-sm font-sans;
+  resize: vertical;
+}
+
+.select-base {
+  @apply w-full px-3 py-2 border border-slate-300 rounded-md
+    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+    transition-all text-sm bg-white;
+}
+
+/* Buttons */
+.btn-primary {
+  @apply px-4 py-2 bg-blue-600 text-white rounded-md font-medium
+    hover:bg-blue-700 active:bg-blue-800 disabled:bg-slate-400
+    transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500;
+}
+
+.btn-secondary {
+  @apply px-4 py-2 bg-slate-200 text-slate-900 rounded-md font-medium
+    hover:bg-slate-300 active:bg-slate-400 disabled:bg-slate-100
+    transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400;
+}
+
+.btn-danger {
+  @apply px-4 py-2 bg-red-600 text-white rounded-md font-medium
+    hover:bg-red-700 active:bg-red-800 disabled:bg-slate-400
+    transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500;
+}
+
+.btn-success {
+  @apply px-4 py-2 bg-green-600 text-white rounded-md font-medium
+    hover:bg-green-700 active:bg-green-800 disabled:bg-slate-400
+    transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500;
+}
+
+.btn-sm {
+  @apply px-3 py-1 text-sm;
+}
+
+.btn-lg {
+  @apply px-6 py-3 text-base;
+}
+
+/* Cards */
+.card {
+  @apply bg-white rounded-lg shadow p-6;
+}
+
+.card-hover {
+  @apply card hover:shadow-md transition-shadow;
+}
+
+/* Modals */
+.modal-overlay {
+  @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50;
+}
+
+.modal-content {
+  @apply bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto;
+}
+
+/* Loading */
+.spinner {
+  @apply inline-block animate-spin;
+}
+
+/* Status badges */
+.badge-success {
+  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+    bg-green-100 text-green-800;
+}
+
+.badge-warning {
+  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+    bg-amber-100 text-amber-800;
+}
+
+.badge-danger {
+  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+    bg-red-100 text-red-800;
+}
+
+.badge-info {
+  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+    bg-blue-100 text-blue-800;
+}
+
+/* Alerts */
+.alert {
+  @apply p-4 rounded-md border;
+}
+
+.alert-success {
+  @apply alert bg-green-50 border-green-200 text-green-800;
+}
+
+.alert-warning {
+  @apply alert bg-amber-50 border-amber-200 text-amber-800;
+}
+
+.alert-danger {
+  @apply alert bg-red-50 border-red-200 text-red-800;
+}
+
+.alert-info {
+  @apply alert bg-blue-50 border-blue-200 text-blue-800;
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  @apply w-2 h-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-400 rounded hover:bg-slate-500;
+}
