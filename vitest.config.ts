@@ -1,0 +1,52 @@
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    // Ambiente de teste
+    environment: 'happy-dom',
+
+    // Configuração de globals (descomente se quiser usar describe, it, expect sem import)
+    globals: true,
+
+    // Coverage
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html', 'lcov'],
+      exclude: [
+        'node_modules/',
+        'src/__tests__/',
+        '.next/',
+        'dist/',
+        '**/*.config.ts',
+        '**/types/**',
+      ],
+      lines: 70,
+      functions: 70,
+      branches: 70,
+      statements: 70,
+    },
+
+    // Setup files
+    setupFiles: ['./src/__tests__/setup.ts'],
+
+    // Incluir arquivos de teste
+    include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx}'],
+    exclude: ['node_modules', 'dist', '.idea', '.git', '.cache'],
+
+    // Timeout
+    testTimeout: 10000,
+
+    // Mocking
+    mockReset: true,
+    restoreMocks: true,
+    clearMocks: true,
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+});
