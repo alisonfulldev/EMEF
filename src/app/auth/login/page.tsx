@@ -1,10 +1,7 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
-
 import { useState } from 'react';
 import { Mail, Lock, Loader } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
@@ -12,7 +9,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const supabase = createClient();
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -25,6 +21,9 @@ export default function LoginPage() {
 
     try {
       setLoading(true);
+      const { createClient } = await import('@/lib/supabase/client');
+      const supabase = createClient();
+
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
