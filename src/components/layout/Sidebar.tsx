@@ -134,17 +134,18 @@ export default function Sidebar({ perfil, isOpen, onClose }: SidebarProps) {
       <aside
         className={cn(
           'fixed left-0 top-16 bottom-0 w-64 bg-white border-r border-slate-200',
-          'overflow-y-auto transition-transform duration-300',
+          'flex flex-col transition-transform duration-300',
           'lg:translate-x-0 z-40',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
-        <nav className="p-4 space-y-2">
+        {/* Menu scrollable */}
+        <nav className="flex-1 overflow-y-auto p-4 space-y-2">
           {menuItems.map((item: any) => (
             <div key={item.label}>
               {item.items ? (
                 <>
-                  <p className="text-xs font-semibold text-slate-500 uppercase px-3 py-2 mt-4">
+                  <p className="text-xs font-semibold text-slate-500 uppercase px-3 py-2 mt-4 first:mt-0">
                     {item.label}
                   </p>
                   <div className="space-y-1">
@@ -188,12 +189,11 @@ export default function Sidebar({ perfil, isOpen, onClose }: SidebarProps) {
           ))}
         </nav>
 
-        {/* Logout button */}
-        <div className="border-t border-slate-200 p-4 mt-8">
+        {/* Logout button - always at bottom */}
+        <div className="border-t border-slate-200 p-4">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2 text-red-600
-              hover:bg-red-50 rounded-md transition-colors text-sm font-medium"
+            className="w-full flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-md transition-colors text-sm font-medium"
           >
             <LogOut size={18} />
             Logout
