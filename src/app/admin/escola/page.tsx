@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Escola } from '@/types';
+import { Escola, Usuario } from '@/types';
 
 export default function EscolaPage() {
   const [escola, setEscola] = useState<Escola | null>(null);
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     nome: '',
@@ -15,17 +16,23 @@ export default function EscolaPage() {
     estado: '',
     telefone: '',
     email: '',
+    diretor_id: '',
   });
 
   useEffect(() => {
     fetchEscola();
+    fetchUsuarios();
   }, []);
 
   const fetchEscola = async () => {
     try {
       const res = await fetch('/api/admin/escola');
       const data = await res.json();
-      if (data) {
+      if (!res.ok) {
+        toast.error(data.error || 'Erro');
+        return;
+      }
+      if (data?.nome) {
         setEscola(data);
         setFormData({
           nome: data.nome || '',
@@ -35,12 +42,28 @@ export default function EscolaPage() {
           estado: data.estado || '',
           telefone: data.telefone || '',
           email: data.email || '',
+          diretor_id: data.diretor_id || '',
         });
       }
     } catch (error) {
-      toast.error('Erro');
+      toast.error('Erro ao carregar escola');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchUsuarios = async () => {
+    try {
+      const res = await fetch('/api/admin/usuarios');
+      const data = await res.json();
+      if (!res.ok) {
+        setUsuarios([]);
+        return;
+      }
+      setUsuarios(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error fetching usuarios:', error);
+      setUsuarios([]);
     }
   };
 
@@ -132,6 +155,22 @@ export default function EscolaPage() {
               onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
               className="input-base"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Diretor</label>
+            <select
+              value={formData.diretor_id}
+              onChange={(e) => setFormData({ ...formData, diretor_id: e.target.value })}
+              className="select-base"
+            >
+              <option value="">Selecione um diretor</option>
+              {usuarios.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.nome}
+                </option>
+              ))}
+            </select>
           </div>
 
           <button type="submit" className="btn-primary w-full">Salvar</button>
