@@ -52,17 +52,27 @@ export default function Sidebar({ perfil, isOpen, onClose }: SidebarProps) {
       return [
         ...baseItems,
         {
-          label: 'Gestão',
+          label: 'Configuração',
           items: [
-            { label: 'Alunos', href: '/admin/alunos', icon: Users },
-            { label: 'Turmas', href: '/admin/turmas', icon: BookOpen },
-            { label: 'Disciplinas', href: '/admin/disciplinas', icon: FileText },
-            { label: 'Professores', href: '/admin/professores', icon: Users },
-            { label: 'Responsáveis', href: '/admin/responsaveis', icon: Users },
-            { label: 'Usuários', href: '/admin/usuarios', icon: Users },
-            { label: 'Aulas', href: '/admin/aulas', icon: BookOpen },
             { label: 'Escola', href: '/admin/escola', icon: Settings },
             { label: 'Ano Letivo', href: '/admin/ano-letivo', icon: Settings },
+          ],
+        },
+        {
+          label: 'Gestão Acadêmica',
+          items: [
+            { label: 'Disciplinas', href: '/admin/disciplinas', icon: FileText },
+            { label: 'Professores', href: '/admin/professores', icon: Users },
+            { label: 'Turmas', href: '/admin/turmas', icon: BookOpen },
+            { label: 'Alunos', href: '/admin/alunos', icon: Users },
+            { label: 'Responsáveis', href: '/admin/responsaveis', icon: Users },
+            { label: 'Aulas', href: '/admin/aulas', icon: BookOpen },
+          ],
+        },
+        {
+          label: 'Administração',
+          items: [
+            { label: 'Usuários', href: '/admin/usuarios', icon: Users },
           ],
         },
         {
