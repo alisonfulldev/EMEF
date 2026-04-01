@@ -13,17 +13,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check if user is professor
-    const { data: usuario } = await supabase
-      .from('usuarios')
-      .select('perfil')
-      .eq('id', user.id)
-      .single();
-
-    if (!usuario || usuario.perfil !== 'professor') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
-
     // Get turmas for this professor (unique via aulas)
     const { data, error } = await supabase
       .from('aulas')

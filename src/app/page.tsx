@@ -11,29 +11,6 @@ export default async function Home() {
     redirect('/auth/login');
   }
 
-  // Get user profile
-  const { data: usuario } = await supabase
-    .from('usuarios')
-    .select('perfil')
-    .eq('id', user.id)
-    .single();
-
-  // Redirect based on role
-  if (!usuario) {
-    redirect('/auth/login');
-  }
-
-  const perfil = usuario.perfil;
-
-  if (perfil === 'professor') {
-    redirect('/professor');
-  } else if (perfil === 'responsavel') {
-    redirect('/responsavel');
-  } else if (perfil === 'cozinha') {
-    redirect('/cozinha');
-  } else if (perfil === 'admin' || perfil === 'secretaria' || perfil === 'diretor') {
-    redirect('/adm');
-  }
-
-  redirect('/auth/login');
+  // All authenticated users go to the unified admin dashboard
+  redirect('/admin/alunos');
 }

@@ -57,7 +57,7 @@ export default function AdminLayout({
     <div className="min-h-screen flex flex-col bg-slate-50">
       <Navbar usuario={usuario} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
       <div className="flex flex-1">
-        <Sidebar perfil="admin" isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <main className="flex-1 lg:ml-64">
           <div className="p-4 md:p-8">
             {children}

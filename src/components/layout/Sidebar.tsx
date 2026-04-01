@@ -16,15 +16,13 @@ import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { Perfil } from '@/types';
 
 interface SidebarProps {
-  perfil?: Perfil;
   isOpen?: boolean;
   onClose?: () => void;
 }
 
-export default function Sidebar({ perfil, isOpen, onClose }: SidebarProps) {
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const supabase = createClient();
   const router = useRouter();
@@ -39,95 +37,56 @@ export default function Sidebar({ perfil, isOpen, onClose }: SidebarProps) {
     }
   };
 
-  const getMenuItems = () => {
-    const baseItems = [
-      {
-        label: 'Dashboard',
-        href: perfil === 'admin' || perfil === 'secretaria' ? '/adm' : `/${perfil}`,
-        icon: LayoutDashboard,
-      },
-    ];
-
-    if (perfil === 'admin' || perfil === 'secretaria' || perfil === 'diretor') {
-      return [
-        ...baseItems,
-        {
-          label: 'Configuração',
-          items: [
-            { label: 'Escola', href: '/admin/escola', icon: Settings },
-            { label: 'Ano Letivo', href: '/admin/ano-letivo', icon: Settings },
-          ],
-        },
-        {
-          label: 'Gestão Acadêmica',
-          items: [
-            { label: 'Disciplinas', href: '/admin/disciplinas', icon: FileText },
-            { label: 'Professores', href: '/admin/professores', icon: Users },
-            { label: 'Turmas', href: '/admin/turmas', icon: BookOpen },
-            { label: 'Alunos', href: '/admin/alunos', icon: Users },
-            { label: 'Responsáveis', href: '/admin/responsaveis', icon: Users },
-            { label: 'Aulas', href: '/admin/aulas', icon: BookOpen },
-          ],
-        },
-        {
-          label: 'Administração',
-          items: [
-            { label: 'Usuários', href: '/admin/usuarios', icon: Users },
-          ],
-        },
-        {
-          label: 'Relatórios',
-          items: [
-            { label: 'Alertas', href: '/adm/alertas', icon: BarChart3 },
-            { label: 'Notas', href: '/adm/notas', icon: BarChart3 },
-            { label: 'Justificativas', href: '/adm/justificativas', icon: CheckCircle },
-          ],
-        },
-      ];
-    } else if (perfil === 'professor') {
-      return [
-        ...baseItems,
-        {
-          label: 'Aulas',
-          items: [
-            { label: 'Chamada', href: '/professor/chamada', icon: CheckCircle },
-            { label: 'Notas', href: '/professor/notas', icon: BarChart3 },
-            { label: 'Avaliações', href: '/professor/avaliacoes', icon: FileText },
-          ],
-        },
-      ];
-    } else if (perfil === 'responsavel') {
-      return [
-        ...baseItems,
-        {
-          label: 'Consultas',
-          items: [
-            { label: 'Justificativas', href: '/responsavel/justificativas', icon: FileText },
-          ],
-        },
-      ];
-    } else if (perfil === 'cozinha') {
-      return [
-        ...baseItems,
-        {
-          label: 'Presença',
-          items: [
-            { label: 'Alunos Presentes', href: '/cozinha/alunos-presentes', icon: Users },
-          ],
-        },
-      ];
-    }
-
-    return baseItems;
-  };
-
-  const menuItems = getMenuItems();
+  const menuItems = [
+    {
+      label: 'Início',
+      href: '/admin/alunos',
+      icon: LayoutDashboard,
+    },
+    {
+      label: 'Configuração',
+      items: [
+        { label: 'Escola', href: '/admin/escola', icon: Settings },
+        { label: 'Ano Letivo', href: '/admin/ano-letivo', icon: Settings },
+      ],
+    },
+    {
+      label: 'Gestão Acadêmica',
+      items: [
+        { label: 'Disciplinas', href: '/admin/disciplinas', icon: FileText },
+        { label: 'Professores', href: '/admin/professores', icon: Users },
+        { label: 'Turmas', href: '/admin/turmas', icon: BookOpen },
+        { label: 'Alunos', href: '/admin/alunos', icon: Users },
+        { label: 'Responsáveis', href: '/admin/responsaveis', icon: Users },
+        { label: 'Aulas', href: '/admin/aulas', icon: BookOpen },
+      ],
+    },
+    {
+      label: 'Chamada & Notas',
+      items: [
+        { label: 'Fazer Chamada', href: '/professor/chamada', icon: CheckCircle },
+        { label: 'Notas', href: '/professor/notas', icon: BarChart3 },
+        { label: 'Avaliações', href: '/professor/avaliacoes', icon: FileText },
+      ],
+    },
+    {
+      label: 'Relatórios',
+      items: [
+        { label: 'Alertas', href: '/adm/alertas', icon: BarChart3 },
+        { label: 'Notas', href: '/adm/notas', icon: BarChart3 },
+        { label: 'Justificativas', href: '/adm/justificativas', icon: CheckCircle },
+      ],
+    },
+    {
+      label: 'Administração',
+      items: [
+        { label: 'Usuários', href: '/admin/usuarios', icon: Users },
+      ],
+    },
+  ];
 
   const isActive = (href: string) => {
-    if (href === '/adm' || href === '/admin' || href === '/professor' || href === '/responsavel' || href === '/cozinha') {
-      return pathname.startsWith(href);
-    }
-    return pathname === href;
+    return pathname === href || pathname.startsWith(href + '/');
   };
 
   return (

@@ -16,17 +16,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check if user is admin
-    const { data: usuario } = await supabase
-      .from('usuarios')
-      .select('perfil')
-      .eq('id', user.id)
-      .single();
-
-    if (!usuario || usuario.perfil !== 'admin') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
-
     let query = supabase
       .from('alunos')
       .select(
@@ -72,17 +61,6 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Check if user is admin
-    const { data: usuario } = await supabase
-      .from('usuarios')
-      .select('perfil')
-      .eq('id', user.id)
-      .single();
-
-    if (!usuario || usuario.perfil !== 'admin') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     // Validate required fields

@@ -11,6 +11,8 @@ export default function ChamadaPage() {
   const [alunos, setAlunos] = useState<(Aluno & { status: StatusRegistro })[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [chamadaId, setChamadaId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchAlunos();
@@ -36,7 +38,7 @@ export default function ChamadaPage() {
     e.preventDefault();
     setSaving(true);
     try {
-      await fetch('/api/professor/chamada', {
+      const res = await fetch('/api/professor/chamada', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -47,11 +49,33 @@ export default function ChamadaPage() {
           })),
         }),
       });
+      const data = await res.json();
+      setChamadaId(data.chamada_id);
       toast.success('Chamada registrada com sucesso');
     } catch (error) {
       toast.error('Erro ao registrar chamada');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleEnviar = async () => {
+    if (!chamadaId) {
+      toast.error('Chamada não foi salva');
+      return;
+    }
+
+    setSending(true);
+    try {
+      const res = await fetch(`/api/chamada/${chamadaId}/enviar`, {
+        method: 'POST',
+      });
+      const data = await res.json();
+      toast.success(`${data.enviados} email(s) enviado(s) aos responsáveis`);
+    } catch (error) {
+      toast.error('Erro ao enviar emails');
+    } finally {
+      setSending(false);
     }
   };
 
@@ -110,11 +134,21 @@ export default function ChamadaPage() {
         <div className="flex gap-3">
           <button
             type="submit"
-            disabled={saving}
+            disabled={saving || chamadaId !== null}
             className="btn-primary flex-1"
           >
             {saving ? 'Salvando...' : 'Concluir Chamada'}
           </button>
+          {chamadaId && (
+            <button
+              type="button"
+              onClick={handleEnviar}
+              disabled={sending}
+              className="btn-success flex items-center gap-2"
+            >
+              {sending ? 'Enviando...' : '✉ Enviar para Responsáveis'}
+            </button>
+          )}
         </div>
       </form>
     </div>

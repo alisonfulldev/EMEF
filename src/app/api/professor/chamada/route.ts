@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase.from('registros_chamada').insert(registrosList);
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
 
-    return NextResponse.json({ success: true }, { status: 201 });
+    return NextResponse.json({ success: true, chamada_id: chamada.id }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: 'Server Error' }, { status: 500 });
   }
