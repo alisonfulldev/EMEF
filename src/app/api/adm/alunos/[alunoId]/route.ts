@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
-export async function GET(request: NextRequest, { params }: { params: { alunoId: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ alunoId: string }> }) {
   try {
+    const { alunoId } = await params;
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('alunos')
       .select('*, turmas(nome)')
-      .eq('id', params.alunoId)
+      .eq('id', alunoId)
       .single();
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
     return NextResponse.json(data);

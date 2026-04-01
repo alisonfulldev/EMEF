@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Users, FileText, AlertCircle } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
 
 export default function ResponsavelDashboard() {
-  const [alunos, setAlunos] = useState([]);
+  const [alunos, setAlunos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
@@ -95,18 +96,18 @@ export default function ResponsavelDashboard() {
                     <p className="text-sm text-slate-600 mt-1">Matrícula: {aluno.matricula}</p>
                     <p className="text-sm text-slate-600">Turma: {aluno.turma_nome || 'N/A'}</p>
                     <div className="mt-4 flex gap-2">
-                      <a
+                      <Link
                         href={`/responsavel/${aluno.id}`}
                         className="text-sm px-3 py-2 bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition-colors"
                       >
                         Ver Histórico
-                      </a>
-                      <a
+                      </Link>
+                      <Link
                         href="/responsavel/justificativas"
                         className="text-sm px-3 py-2 bg-green-50 text-green-600 rounded hover:bg-green-100 transition-colors"
                       >
                         Enviar Justificativa
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 ))}

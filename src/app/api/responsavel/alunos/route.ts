@@ -56,9 +56,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    const alunos = data?.map(a => ({
+    const alunos = data?.map((a: any) => ({
       ...a.alunos,
-      turma_nome: a.alunos?.turmas?.nome,
+      turma_nome: a.alunos?.turmas?.[0]?.nome,
     })) || [];
 
     return NextResponse.json(alunos);

@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const supabase = await createClient();
 
     const { data: avaliacao, error: avalError } = await supabase
       .from('avaliacoes')
       .select('turma_id')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (avalError) return NextResponse.json({ error: 'Avaliação não encontrada' }, { status: 404 });
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const { data: notas } = await supabase
       .from('notas_avaliacao')
       .select()
-      .eq('avaliacao_id', params.id);
+      .eq('avaliacao_id', id);
 
     const notasMap = new Map(notas?.map((n: any) => [n.aluno_id, n]) || []);
 
@@ -37,8 +38,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const supabase = await createClient();
     const {
       data: { user },
@@ -48,7 +50,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const registros = notas
       .filter((n: any) => n.nota !== null && n.nota !== undefined)
       .map((n: any) => ({
-        avaliacao_id: params.id,
+        avaliacao_id: id,
         aluno_id: n.aluno_id,
         nota: n.nota,
         registrado_por: user?.id,

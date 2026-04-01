@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
-export async function GET(request: NextRequest, { params }: { params: { alunoId: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ alunoId: string }> }) {
   try {
+    const { alunoId } = await params;
     const supabase = await createClient();
 
     const { data, error } = await supabase
@@ -11,7 +12,7 @@ export async function GET(request: NextRequest, { params }: { params: { alunoId:
         *,
         disciplinas(nome)
       `)
-      .eq('aluno_id', params.alunoId)
+      .eq('aluno_id', alunoId)
       .order('bimestre');
 
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });

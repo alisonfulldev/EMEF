@@ -1,6 +1,6 @@
 'use client';
 
-import { GitHub } from 'lucide-react';
+import { Github } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
 
@@ -45,7 +45,7 @@ export default function LoginPage() {
               bg-slate-900 text-white rounded-lg font-medium
               hover:bg-slate-800 transition-colors"
           >
-            <GitHub size={20} />
+            <Github size={20} />
             Entrar com GitHub
           </button>
         </div>

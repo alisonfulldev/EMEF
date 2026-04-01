@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Remove duplicates
-    const turmas = data?.map(a => a.turmas).filter((v, i, a) => a.findIndex(t => t.id === v.id) === i) || [];
+    const turmas = data?.map((a: any) => a.turmas).filter((v: any, i: number, a: any[]) => a.findIndex((t: any) => t.id === v.id) === i) || [];
 
     return NextResponse.json(turmas);
   } catch (error) {

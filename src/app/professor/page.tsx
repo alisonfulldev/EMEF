@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
 
 export default function ProfessorDashboard() {
-  const [turmas, setTurmas] = useState([]);
+  const [turmas, setTurmas] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 

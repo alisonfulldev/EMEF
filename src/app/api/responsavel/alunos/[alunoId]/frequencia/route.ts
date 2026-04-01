@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
-export async function GET(request: NextRequest, { params }: { params: { alunoId: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ alunoId: string }> }) {
   try {
+    const { alunoId } = await params;
     const supabase = await createClient();
 
     const { data: registros } = await supabase
       .from('registros_chamada')
       .select()
-      .eq('aluno_id', params.alunoId);
+      .eq('aluno_id', alunoId);
 
     const total = registros?.length || 0;
     const presencas = registros?.filter((r: any) => r.status === 'presença').length || 0;

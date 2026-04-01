@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import { Usuario } from '@/types';
 
 interface NavbarProps {
-  usuario?: Usuario;
+  usuario?: Usuario | null;
   toggleSidebar?: () => void;
 }
 
